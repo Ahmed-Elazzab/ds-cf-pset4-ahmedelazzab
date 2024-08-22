@@ -1,0 +1,3 @@
+include src/pset4_ahmedelazzab/config/*.yml
+include src/pset4_ahmedelazzab/config/*.yaml
+include src/pset4_ahmedelazzab/config/*.json

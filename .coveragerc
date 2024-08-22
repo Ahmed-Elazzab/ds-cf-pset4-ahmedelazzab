@@ -1,0 +1,6 @@
+[run]
+omit =
+    # do not report coverage for anything under tests/
+    */tests/*
+    # do not report coverage for any file with test_ prefix
+    */pset4_ahmedelazzab/test_*

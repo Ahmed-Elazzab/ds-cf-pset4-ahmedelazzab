@@ -1,0 +1,8 @@
+name: Local Provider
+platform: Local
+environment:
+  - local
+details:
+  workspace_dir: /tmp/.workspace
+  default_proxy: http://localhost:9000
+

@@ -1,0 +1,30 @@
+{
+    "target": "class",
+    "features": [
+        "sepal_length",
+        "sepal_width",
+        "petal_length",
+        "petal_width"
+    ],
+    "random_state": 1,
+    "train_size": 0.9,
+    "notification_handlers": {
+        "email_notification_handler": {
+            "notification_type": "email",
+            "notify_on": [],
+            "template": "notification_email_template.html.j2",
+            "recipients": [
+                "user1@pg.com"
+            ],
+            "subject": "[PyrogAI-{{step.environment.value}}] [{{step.status.value|upper}}] Test pipelines for scope '{{step.scope}}'",
+            "smtp": {
+                "server_address": "smtp.office365.com",
+                "port": 587,
+                "start_tls": true,
+                "user": "aif.im@pg.com",
+                "password_secret_name": "SMTP-PASSWORD"
+            },
+            "dry_run": true
+        }
+    }
+}

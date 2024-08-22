@@ -1,0 +1,35 @@
+{{- if eq (default .Values.ipa.enable_ipazero false) true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-rabbitmq
+  labels:
+    app: {{ .Chart.Name }}
+    component: rabbitmq
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+      app: {{ .Chart.Name }}-rabbitmq
+  template:
+    metadata:
+      name: {{ .Release.Name }}-{{ .Chart.Name }}-rabbitmq
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ .Chart.Name }}-rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3.13.3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 15672
+        - containerPort: 5672
+        resources: {}
+  {{ end }}

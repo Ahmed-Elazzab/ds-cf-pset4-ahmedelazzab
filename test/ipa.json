@@ -1,0 +1,16 @@
+{
+    "backends": {
+        "local": {
+            "local": {
+                "config_module": "pset4_ahmedelazzab.config",
+                "extra_pipeline_run_params": [
+                    "--environment",
+                    "local",
+                    "--debug"
+                ],
+                "include_published_pipelines": null
+            }
+        }
+    },
+    "custom_endpoints_module": "pset4_ahmedelazzab.custom_ipa_endpoints"
+}

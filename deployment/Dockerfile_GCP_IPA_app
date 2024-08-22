@@ -1,0 +1,18 @@
+ARG IPA_FULL_CACHE_IMAGE
+FROM ${IPA_FULL_CACHE_IMAGE}
+
+ENV VENVDIR=/virtualenvs/ipa
+
+# Add produced wheel to the container for installation
+ADD dist/*.wh[l] /build/
+ADD ipa.json /ipa.json
+
+# Install package without dependencies (already installed in previous layer)
+RUN set -x \
+    && . ${VENVDIR}/bin/activate \
+    && pip install --no-deps /build/*.whl
+
+# Prepare the entrypoint
+ENV PATH="$VENVDIR/bin:$PATH"
+ENTRYPOINT ["ipa"]
+CMD ["run", "--host", "0.0.0.0", "--port", "80", "ipa.json"]

@@ -1,0 +1,24 @@
+ARG BASEIMAGE=
+FROM ${BASEIMAGE}
+
+ENV VENVDIR=/virtualenvs/ipa
+
+# Create virtual environment and install package requirements only (for better caching). We are temporarily adding the
+# Git credentials to a file, which we remove at the end to not ship them with the image, and we are disabling SSL
+# verification which is fine when running with the company's MITM proxy. Requirements are automatically patched to add
+# IPA and Rhea
+ADD requirements.txt /build/
+COPY /pip.conf /etc/pip.conf
+
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip \
+    --mount=type=secret,id=GITHUB_TOKEN \
+    set -x \
+    && cat /build/requirements.txt | sed -e 's/pyrogai\[\([^]]*\)\]/pyrogai[\1,ipa,rhea]/' > /build/requirements-ipa.txt \
+    && python -m venv "${VENVDIR}" \
+    && . ${VENVDIR}/bin/activate \
+    && git config --global credential.https://github.com/procter-gamble/.helper "! f() { echo username=pgcw; echo password=`cat /run/secrets/GITHUB_TOKEN`; }; f" \
+    && git config --global http.sslverify false \
+    && pip install -r /build/requirements-ipa.txt \
+    && git config --global --unset credential.https://github.com/procter-gamble/.helper \
+    && git config --global --unset http.sslverify \
+    && rm -f /etc/pip.conf

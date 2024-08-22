@@ -1,0 +1,52 @@
+site_name: pset4_ahmedelazzab
+
+repo_name: pg-ds-dev-class/ds-cf-pset4-ahmedelazzab
+repo_url: https://github.com/pg-ds-dev-class/ds-cf-pset4-ahmedelazzab
+edit_uri: ""
+
+use_directory_urls: false
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  logo: assets/pg.svg
+  palette:
+    scheme: custom
+    primary: light blue
+    accent: blue
+
+nav:
+    - 'Introduction': 'index.md'
+    - 'Modules':
+      - 'pset4_ahmedelazzab.helloworld': 'modules/pset4_ahmedelazzab.helloworld.md'
+      - 'pset4_ahmedelazzab.exe':
+        - 'Getting started': 'modules/pset4_ahmedelazzab.exe/getting_started.md'
+        - 'Source code': 'modules/pset4_ahmedelazzab.exe/source_code.md'
+
+markdown_extensions:
+- admonition
+- pymdownx.emoji
+- pymdownx.highlight
+- pymdownx.superfences
+- pymdownx.magiclink
+- pymdownx.tasklist
+- toc:
+    permalink: "¤"
+
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [../src]
+        setup_commands:
+        - import sys
+        - from unittest.mock import MagicMock as mock
+        selection:
+          filters:
+          - "!^_"       # It excludes all private directories, modules, methods, and so on
+          - "!^tests$"  # It excludes all /tests directories
+          - "^__.*__$"  # It forces to generate documentation for all magic methods
+          - "!^mockups$" # Excludes classes inherited from two base classes, due to docs generation error
+- autorefs
