@@ -78,7 +78,7 @@ def _main():
 
     cmd = ["pytest", "-s", "--log-cli-level=INFO", "--cov=src", "-vvv"] + filt + xdist + markers + \
           ["--force-sugar", "-p", "no:cacheprovider", "--html=pytest_report/index.html",
-           "--durations=10", "./src/pset4_ahmedelazzab"]
+           "--durations=10", "./src"]
     try:
         print(f"Running: {' '.join(cmd)}")  # noqa
         run(cmd, check=True)

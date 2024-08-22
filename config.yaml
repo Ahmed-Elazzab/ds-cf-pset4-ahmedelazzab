@@ -1,0 +1,36 @@
+training_data: input_data/kc_house_data.csv # data used to train the model
+input_data: input_data/kc_house_data.csv # data to predict on
+model_dir: output/model_registry
+predicted_result_path: output/predictions/predictions.csv
+
+train_model: True # True or False
+### if train_model False ###
+trained_model_file: model_linear_2023-06-01_173421.pkl
+### if train_model True ###
+test_size: 0.4
+model_type: linear  # svm/linear
+
+data_params:
+  # list of  columns used as  inputs
+  features:
+  - bedrooms
+  - bathrooms
+  - sqft_living
+  - sqft_lot
+  - floors
+  - waterfront
+  - view
+  - condition
+  - grade
+  - sqft_above
+  - sqft_basement
+  - yr_built
+  - yr_renovated
+  - zipcode
+  - lat
+  - long
+  - sqft_living15
+  - sqft_lot15
+  target:
+  # output column
+  - price
