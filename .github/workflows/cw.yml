@@ -50,7 +50,7 @@ jobs:
         # When there is no pre-existing JFrog credentials comment in PR
         - name: Create PR comment if JFrog credentials exist
           if: startsWith(github.event_name, 'pull_request') && steps.fc.outputs.comment-id == '' && steps.jfrog-credentials.outputs.exist == 'true'
-          uses: peter-evans/create-or-update-comment@v2
+          uses: peter-evans/create-or-update-comment@v4
           with:
             issue-number: ${{ github.event.pull_request.number }}
             body: |
@@ -60,7 +60,7 @@ jobs:
 
         - name: Create PR comment if JFrog credentials don't exist
           if: startsWith(github.event_name, 'pull_request') && steps.fc.outputs.comment-id == '' && steps.jfrog-credentials.outputs.exist == 'false'
-          uses: peter-evans/create-or-update-comment@v2
+          uses: peter-evans/create-or-update-comment@v4
           with:
             issue-number: ${{ github.event.pull_request.number }}
             body: |
@@ -70,7 +70,7 @@ jobs:
         # When there is a pre-existing JFrog credentials comment in PR
         - name: Update PR comment if JFrog credentials exist
           if: startsWith(github.event_name, 'pull_request') && steps.fc.outputs.comment-id != '' && steps.jfrog-credentials.outputs.exist == 'true'
-          uses: peter-evans/create-or-update-comment@v2
+          uses: peter-evans/create-or-update-comment@v4
           with:
             comment-id: ${{ steps.fc.outputs.comment-id }}
             body: |
@@ -81,7 +81,7 @@ jobs:
 
         - name: Update PR comment if JFrog credentials don't exist
           if: startsWith(github.event_name, 'pull_request') && steps.fc.outputs.comment-id != '' && steps.jfrog-credentials.outputs.exist == 'false'
-          uses: peter-evans/create-or-update-comment@v2
+          uses: peter-evans/create-or-update-comment@v4
           with:
             comment-id: ${{ steps.fc.outputs.comment-id }}
             body: |
