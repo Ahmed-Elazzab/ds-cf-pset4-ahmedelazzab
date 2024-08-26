@@ -9,6 +9,7 @@ trained_model_file: model_linear_2023-06-01_173421.pkl
 ### if train_model True ###
 test_size: 0.4
 model_type: linear  # svm/linear
+platform: cloud  # local/cloud
 
 data_params:
   # list of  columns used as  inputs
