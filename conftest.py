@@ -9,9 +9,7 @@ def pytest_addoption(parser):
     Args:
         parser : passed by pytest
     """
-    parser.addoption(
-        "--include-slow", action="store_true", default=False, help="include long-running tests"
-    )
+    parser.addoption("--include-slow", action="store_true", default=False, help="include long-running tests")
 
 
 def pytest_configure(config):

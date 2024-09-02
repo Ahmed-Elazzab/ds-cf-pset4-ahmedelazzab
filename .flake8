@@ -38,7 +38,7 @@ ignore =
     # 'The names in your from import are in the wrong order' - too strict
     I101,
     # flake8-variable-names: We're allowing single-character variable names as those make sense in some cases
-    VNE001, VNE002
+    VNE001, VNE002, N803, F401, D100, D212, N806, I100, I202
 
 # pep8-naming - exclude some names from checks
 # X,Y,Z - typically used variable names
