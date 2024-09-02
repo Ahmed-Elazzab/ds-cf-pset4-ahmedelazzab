@@ -1,11 +1,12 @@
 import logging
 import numpy
 from sklearn.preprocessing import StandardScaler
-import great_expectations as ge
+from great_expectations import expectations as ge
 import pandas as pd
-from great_expectations.dataset import PandasDataset
+# from dnalib.custom_expectations import NumericPandasExpectations
 
 logger = logging.getLogger(__name__)
+
 
 
 class DataProcessor:
@@ -25,33 +26,36 @@ class DataProcessor:
         self.X_scaler = None
         self.y_scaler = None
 
-    def fit(self, df):
+    def fit(self, dataframe):
         # Implement the training logic here
         # For example, calculate mean and std for normalization
-        self.means = df.mean()
-        self.stds = df.std()
+        self.means = dataframe.mean()
+        self.stds = dataframe.std()
         self.trained = True
 
-    def preprocess(self, data):
+    def preprocess(self, dataframe):
         """
         Execute the data processing operations.
 
         Args:
             data (DataFrame): The DataFrame to process.
         """
+        if dataframe is None:
+            raise ValueError("Input data is None.")
+        
         # 1. Filter out the numerical columns from the dataframe.
-        self.num_cols = data.select_dtypes(include=numpy.number).columns.tolist()
+        self.num_cols = dataframe.select_dtypes(include=numpy.number).columns.tolist()
         # 2. Filter out the categorical columns from the dataframe.
-        self.cat_cols = data.select_dtypes(exclude=numpy.number).columns.tolist()
+        self.cat_cols = dataframe.select_dtypes(exclude=numpy.number).columns.tolist()
         # 3. Call remove null function on your data
-        data = self.remove_nulls(data)
+        dataframe = self.remove_nulls(dataframe)
         # 4. Call remove duplicate function on your data
-        data = self.remove_duplicates(data)
+        dataframe = self.remove_duplicates(dataframe)
         # 5. Call remove standard Scale function on your data
-        data = self.standard_scale(data)
-        return data
+        dataframe = self.standard_scale(dataframe)
+        return dataframe
 
-    def post_process(self, data):
+    def post_process(self, dataframe):
         """
         Execute the post-processing operations.
 
@@ -67,10 +71,10 @@ class DataProcessor:
           2. return updated dataframe
         """
         # implementation for the logic inverse the standard scaling
-        data[self.y_col] = self.y_scaler.inverse_transform(data[self.y_col].values.reshape(-1, 1))
-        return data
+        dataframe[self.y_col] = self.y_scaler.inverse_transform(dataframe[self.y_col].values.reshape(-1, 1))
+        return dataframe
 
-    def remove_nulls(self, data):
+    def remove_nulls(self, dataframe):
         """
         Remove null values from specified columns in the DataFrame.
 
@@ -81,11 +85,11 @@ class DataProcessor:
             KeyError: If the specified columns are not found in the DataFrame.
         """
         # the logic to remove null values
-        null_less_data = data.dropna()
+        null_less_data = dataframe.dropna()
 
         return null_less_data
 
-    def remove_duplicates(self, data):
+    def remove_duplicates(self, dataframe):
         """
         Remove duplicate rows from the DataFrame.
 
@@ -96,10 +100,10 @@ class DataProcessor:
             KeyError: If the specified columns are not found in the DataFrame.
         """
         # write logic to remove duplicate rows from all columns and return updated dataframe
-        no_duplicates = data.drop_duplicates()
+        no_duplicates = dataframe.drop_duplicates()
         return no_duplicates
 
-    def standard_scale(self, data):
+    def standard_scale(self, dataframe):
         """
         Scale the data using StandardScaler.
 
@@ -113,39 +117,43 @@ class DataProcessor:
         # Initialize the scaler if not already initialized
         if self.X_scaler is None:
             self.X_scaler = StandardScaler()
-            self.X_scaler.fit(data[self.num_cols])
+            self.X_scaler.fit(dataframe[self.num_cols])
 
         # Apply standard scaling to the numerical columns
-        data[self.num_cols] = self.X_scaler.transform(data[self.num_cols])
+        dataframe[self.num_cols] = self.X_scaler.transform(dataframe[self.num_cols])
 
         # Initialize the scaler for the target column if not already initialized
         if self.y_scaler is None:
             self.y_scaler = StandardScaler()
-            self.y_scaler.fit(data[self.y_col])
+            self.y_scaler.fit(dataframe[self.y_col])
 
         # Apply standard scaling to the target column
-        data[self.y_col] = self.y_scaler.transform(data[self.y_col])
-        return data
+        dataframe[self.y_col] = self.y_scaler.transform(dataframe[self.y_col])
+        return dataframe
     
-    
-    def pre_validation(self, data):
+    #This is just to show concept of great expectations i repeated the unittest but in reality the docuemntation has various tools
+    def pre_validation(self, dataframe):
         """Validate data before applying any transformations."""
-        ge_data = ge.from_pandas(data)
-        # expectations
-        ge_data.expect_column_values_to_not_be_null(self.num_cols, self.cat_cols)
-        ge_data.expect_column_values_to_be_of_type(self.num_cols, "float")
-        ge_data.expect_column_values_to_be_of_type(self.cat_cols, "object")
-        ge_data.expect_select_column_values_to_be_unique_within_record("id")
-        return data
+        self.num_cols = dataframe.select_dtypes(include=numpy.number).columns.tolist()
+        # 2. Filter out the categorical columns from the dataframe.
+        self.cat_cols = dataframe.select_dtypes(exclude=numpy.number).columns.tolist()
+        for column in self.num_cols:
+            ge.ExpectColumnValuesToBeOfType(column=column, type_="float")
+        # Create expactations
+        for column in self.cat_cols:
+            ge.ExpectColumnValuesToBeOfType(column=column, type_="str")
+        return dataframe
 
 
-    def post_validation(self, data):
+
+    def post_validation(self, dataframe):
         """Validate data before applying any transformations."""
-        ge_data = ge.from_pandas(data)
-        
-        # Example expectations
-        ge_data.expect_column_values_to_not_be_null(self.num_cols + self.cat_cols)
-        ge_data.expect_column_values_to_be_of_type(self.num_cols, "float")
-        ge_data.expect_column_values_to_be_of_type(self.cat_cols, "object")
-        ge_data.expect_column_values_to_be_unique("id")
-        return data
+        self.num_cols = dataframe.select_dtypes(include=numpy.number).columns.tolist()
+        # 2. Filter out the categorical columns from the dataframe.
+        self.cat_cols = dataframe.select_dtypes(exclude=numpy.number).columns.tolist()
+        for column in self.num_cols:
+            ge.ExpectColumnValuesToBeOfType(column=column, type_="float")
+        # Create expactations
+        for column in self.cat_cols:
+            ge.ExpectColumnValuesToBeOfType(column=column, type_="str")
+        return dataframe

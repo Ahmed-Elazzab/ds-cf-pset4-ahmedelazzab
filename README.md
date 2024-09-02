@@ -6,7 +6,7 @@ Generated using [this build](https://github.com/procter-gamble/de-cf-python-pod/
  of de-cf-python-pod.
 
 [![python](https://img.shields.io/badge/Python-3.9-3776AB?logo=Python&logoColor=white)](https://python.org/)
-[![actions](https://github.com/pg-ds-dev-class/ds-cf-pset4-ahmedelazzab/workflows/P%26G%20Continuous%20Winning/badge.svg)](https://github.com/pg-ds-dev-class/ds-cf-pset4-ahmedelazzab/actions)
+[![P&G Continuous Winning (Continuous Integration) DEV](https://github.com/pg-ds-dev-class/ds-cf-pset3-ahmed-elazzab/actions/workflows/cw.yml/badge.svg)](https://github.com/pg-ds-dev-class/ds-cf-pset4-ahmedelazzab/actions/workflows/cw.yml)
 [![sonarqube](https://img.shields.io/badge/SonarQube-ds--cf--pset4--ahmedelazzab-4E9BCD?logo=SonarQube&labelColor=303030)](https://sonarqubeenterprise.pgcloud.com/sonarqube/dashboard?id=ds-cf-pset4-ahmedelazzab)
 [![confluence](https://img.shields.io/badge/Confluence-none-172B4D?logo=Confluence)](https://jira-pg-ds.atlassian.net/wiki/spaces/none)
 [![python-pod](https://img.shields.io/badge/created%20with-python--pod-AF1685)](https://github.com/procter-gamble/de-cf-python-pod)

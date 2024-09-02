@@ -1,14 +1,13 @@
+import logging
+from abc import ABC, abstractmethod
+import numpy as np
+from sklearn.metrics import r2_score
+from statsmodels.stats.stattools import durbin_watson
+
 """Base class for all the predictors.
 
 The parameters (attributes) are initialized by the child model class.
 """
-
-import logging
-from abc import ABC, abstractmethod
-
-import numpy as np
-from sklearn.metrics import r2_score
-from statsmodels.stats.stattools import durbin_watson
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +59,13 @@ class PredictorABC(ABC):
         r2 = float(r2_score(y_test, y_pred))
 
         # Calculate Durbin-Watson score
-        dw = float(durbin_watson(y_test - y_pred))
+        dw_array = durbin_watson(y_test - y_pred)
+
+        # Ensure you extract a single element from the array
+        if dw_array.ndim > 0:
+            dw = float(dw_array[0])
+        else:
+            dw = float(dw_array)
 
         # Create a dictionary to store the scores
         scores = {"MAPE": mape, "R2": r2, "Durbin-Watson": dw}
