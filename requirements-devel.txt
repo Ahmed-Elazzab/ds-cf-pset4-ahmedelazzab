@@ -17,7 +17,7 @@ isort==5.11.4
 
 # Dependencies management
 pip-autoremove==0.10.0
-pipreqs==0.4.11
+pipreqs==0.5.0
 
 # Testing
 coverage==6.2
