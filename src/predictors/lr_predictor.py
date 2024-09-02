@@ -1,6 +1,9 @@
 """A class for Linear Regression model that uses MLPredictor abstract class."""
+
 from sklearn.linear_model import LinearRegression
-from predictors.abstract_predictor import PredictorABC 
+
+from predictors.abstract_predictor import PredictorABC
+
 
 class LinearModel(PredictorABC):
     """Linear model class using abstract model class."""

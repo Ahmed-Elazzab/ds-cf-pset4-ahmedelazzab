@@ -1,22 +1,24 @@
 import logging
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pickle
+
 import mlflow  # type: ignore
 import pandas as pd
 from azure.ai.ml import MLClient
 from azure.ai.ml.constants import AssetTypes
 from azure.ai.ml.entities import Model
 from azure.identity import DefaultAzureCredential
-from data_processor import DataProcessor
+from azureml.core import Workspace
 from dnalib.azfile import AzFile, azure_init  # type: ignore
 from dotenv import load_dotenv
-from orchestrators.abstract_orchestrator import OrchestratorABC
 from sklearn.model_selection import train_test_split  # type: ignore
-from utils import Utils
-from azureml.core import Workspace
 
+from data_processor import DataProcessor
+from orchestrators.abstract_orchestrator import OrchestratorABC
+from utils import Utils
 
 load_dotenv(".env")
 
@@ -30,7 +32,6 @@ train_data = os.getenv("AZFILE_TRAIN_INPUT_DATA")
 logger = logging.getLogger(__name__)
 
 
-
 class CloudOrchestrator(OrchestratorABC):
     def __init__(self):
         """Initialize the orchestrator."""
@@ -41,9 +42,7 @@ class CloudOrchestrator(OrchestratorABC):
         # Download data from Azure to local
         azure_init(
             azure_storage_secrets={
-                "dsdev": {
-                    "container_url": container_url
-                },  # SAS URL for a Container
+                "dsdev": {"container_url": container_url},  # SAS URL for a Container
             }
         )
         # Implement the full download with try, except
@@ -57,8 +56,6 @@ class CloudOrchestrator(OrchestratorABC):
         else:
             self.load_predict(config)  # Load a trained model and predict using it
         # Return the model registry and predictions if available
-    
-
 
     def train(self, config, predictor):
         """Train the model."""
@@ -90,12 +87,11 @@ class CloudOrchestrator(OrchestratorABC):
 
             # Create an instance of DefaultAzureCredential for authentication
             credential = DefaultAzureCredential()
-            
 
             # Initialize the MLClient object
             ml_client = MLClient(credential, subscription_id, resource_group, workspace_name)
             return ml_client
-        
+
         ml_client = ml_client_project()
         mlflow_tracking_uri = ml_client.workspaces.get(ml_client.workspace_name).mlflow_tracking_uri
         mlflow.set_tracking_uri(mlflow_tracking_uri)
@@ -146,7 +142,6 @@ class CloudOrchestrator(OrchestratorABC):
             )
             ml_client.models.create_or_update(registered_model)
 
-
     def load_predict(self, config):
         """Load a trained model and predict using it."""
         # Initiate MLClient Project
@@ -182,7 +177,10 @@ class CloudOrchestrator(OrchestratorABC):
         y_pred = predictor.predict(data[config["data_params"]["features"]])
 
         # Combine the predictions with the original data
-        final_df = pd.concat([dataframe, pd.DataFrame(data=y_pred, index=dataframe.index, columns=[config["data_params"]["target"]])], axis=1)
+        final_df = pd.concat(
+            [dataframe, pd.DataFrame(data=y_pred, index=dataframe.index, columns=[config["data_params"]["target"]])],
+            axis=1,
+        )
 
         # Post-process the predictions
         final_df = processor.post_process(final_df)

@@ -2,6 +2,7 @@
 
 The parameters (attributes) are initialized by the child model class.
 """
+
 import logging
 from abc import ABC, abstractmethod
 
@@ -16,18 +17,15 @@ class OrchestratorABC(ABC):
 
     @abstractmethod
     def run(self):
-        """
-        """
+        """ """
         raise NotImplementedError()
 
     @abstractmethod
     def train(self):
-        """
-        """
+        """ """
         raise NotImplementedError()
 
     @abstractmethod
     def load_predict(self):
-        """
-        """
+        """ """
         raise NotImplementedError()

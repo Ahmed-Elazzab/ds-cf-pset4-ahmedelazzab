@@ -1,12 +1,13 @@
 import logging
+
 import numpy
-from sklearn.preprocessing import StandardScaler
-from great_expectations import expectations as ge
 import pandas as pd
+from great_expectations import expectations as ge
+from sklearn.preprocessing import StandardScaler
+
 # from dnalib.custom_expectations import NumericPandasExpectations
 
 logger = logging.getLogger(__name__)
-
 
 
 class DataProcessor:
@@ -42,7 +43,7 @@ class DataProcessor:
         """
         if dataframe is None:
             raise ValueError("Input data is None.")
-        
+
         # 1. Filter out the numerical columns from the dataframe.
         self.num_cols = dataframe.select_dtypes(include=numpy.number).columns.tolist()
         # 2. Filter out the categorical columns from the dataframe.
@@ -130,8 +131,8 @@ class DataProcessor:
         # Apply standard scaling to the target column
         dataframe[self.y_col] = self.y_scaler.transform(dataframe[self.y_col])
         return dataframe
-    
-    #This is just to show concept of great expectations i repeated the unittest but in reality the docuemntation has various tools
+
+    # This is just to show concept of great expectations i repeated the unittest but in reality the docuemntation has various tools
     def pre_validation(self, dataframe):
         """Validate data before applying any transformations."""
         self.num_cols = dataframe.select_dtypes(include=numpy.number).columns.tolist()
@@ -143,8 +144,6 @@ class DataProcessor:
         for column in self.cat_cols:
             ge.ExpectColumnValuesToBeOfType(column=column, type_="str")
         return dataframe
-
-
 
     def post_validation(self, dataframe):
         """Validate data before applying any transformations."""

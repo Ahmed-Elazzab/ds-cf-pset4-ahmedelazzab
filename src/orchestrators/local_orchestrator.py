@@ -1,15 +1,18 @@
-import sys
 import os
+import sys
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import pandas as pd
 import logging
 from datetime import datetime
-from utils import Utils
-from orchestrators.abstract_orchestrator import OrchestratorABC
-from data_processor import DataProcessor
+
+import pandas as pd
 from sklearn.model_selection import train_test_split
+
+from data_processor import DataProcessor
+from orchestrators.abstract_orchestrator import OrchestratorABC
 from predictors.lr_predictor import LinearModel
 from predictors.svm_predictor import SVMModel
+from utils import Utils
 
 
 class LocalOrchestrator(OrchestratorABC):
@@ -42,9 +45,9 @@ class LocalOrchestrator(OrchestratorABC):
         # # Post-validate data via great expectations
         processor.post_validation(dataframe)
 
-        # Get the features 
+        # Get the features
         X = dataframe[config["data_params"]["features"]]
-        #Get the target column
+        # Get the target column
         Y = dataframe[config["data_params"]["target"]]
 
         # Split the data into train and test sets
@@ -82,7 +85,10 @@ class LocalOrchestrator(OrchestratorABC):
         y_pred = predictor.predict(dataframe[config["data_params"]["features"]])
 
         # Combine the predictions with the original data
-        final_df = pd.concat([dataframe, pd.DataFrame(data=y_pred, index=dataframe.index, columns=[config["data_params"]["target"]])], axis=1)
+        final_df = pd.concat(
+            [dataframe, pd.DataFrame(data=y_pred, index=dataframe.index, columns=[config["data_params"]["target"]])],
+            axis=1,
+        )
 
         # Post-process the predictions
         final_df = processor.post_process(final_df)
