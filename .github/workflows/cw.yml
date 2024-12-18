@@ -40,7 +40,7 @@ jobs:
         # Check for pre-existing JFrog credentials comment in PR
         - name: Find JFrog credentials PR comment
           if: startsWith(github.event_name, 'pull_request')
-          uses: peter-evans/find-comment@v2
+          uses: peter-evans/find-comment@v3
           id: fc
           with:
             issue-number: ${{ github.event.pull_request.number }}
